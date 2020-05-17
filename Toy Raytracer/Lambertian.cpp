@@ -12,7 +12,7 @@ glm::vec3 random_in_unit_sphere() {
 
 bool Lambertian::scatter(Ray& r, hit_record rec, glm::vec3&attenuation, Ray&scattered) 
 {
-	glm::vec3 target(rec.position + rec.normal);
+	glm::vec3 target(rec.position + rec.normal + random_in_unit_sphere());
 	scattered = Ray(rec.position, target - rec.position);
 	attenuation = albedo;
 	return true;
