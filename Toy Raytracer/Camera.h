@@ -8,11 +8,14 @@ class Camera
 {
 public:
 	glm::vec3 origin, lower_left_corner, horizontal, vertical;
-	Camera(glm::vec3 position, glm::vec3 lookat, glm::vec3 up, float fov, float aspect);
-	Camera(float fov, float aspect) { Camera(glm::vec3(0, 0, 0), glm::vec3(0, 0, -1), glm::vec3(0, 1, 0), fov, aspect); };
-	Camera() { Camera(60.0f, 2); };
-	Ray getRay(float u, float v){
-		return Ray(origin, lower_left_corner + u * horizontal + v * vertical - origin); 
-	}
+	glm::vec3 u, v, w;
+	float lens_radius = 0;
+	Camera(glm::vec3 position, glm::vec3 lookat, glm::vec3 up, float fov, float aspect, float aperature, float focus_dist);
+	Camera(glm::vec3 position, glm::vec3 lookat, glm::vec3 up, float fov, float aspect) :Camera(position, lookat, up, fov, aspect, 0, 1) {};
+	Camera(float fov, float aspect) : Camera(glm::vec3(0, 0, 0), glm::vec3(0, 0, -1), glm::vec3(0, 1, 0), fov, aspect) {}
+	Camera() : Camera(60.0f, 2) {}
+	Ray getRay(float u, float v);
+	float uniform01();
+	glm::vec3 random_in_unit_disk();
 };
 
