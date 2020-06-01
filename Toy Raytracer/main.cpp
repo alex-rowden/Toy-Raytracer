@@ -9,6 +9,8 @@
 #include "Metal.h"
 #include "Dielectric.h"
 #include "Camera.h"
+#include "MovingSphere.h"
+#include "BVHNode.h"
 
 #define M_PI 3.1415926535897932384626433
 #define EPSILON 1e-3
@@ -55,6 +57,7 @@ Object* makeRandomScene() {
 			glm::vec3 center(a + .9 * rand() / (float)RAND_MAX, .2, b + .9 * rand() / (float)RAND_MAX);
 			if (glm::length(center - glm::vec3(4, .2, 0)) > .9) {
 				if (choose_mat < .8) {
+					//list[i++] = new MovingSphere(center, center + glm::vec3(0, 0.5 * rand()/(float)RAND_MAX, 0), 0, 1, .2, new Lambertian(glm::vec3(rand() / (float)RAND_MAX, rand() / (float)RAND_MAX, rand() / (float)RAND_MAX)));
 					list[i++] = new Sphere(center, .2, new Lambertian(glm::vec3(rand() / (float)RAND_MAX, rand() / (float)RAND_MAX, rand() / (float)RAND_MAX)));
 				}
 				else if (choose_mat < .95) {
@@ -69,7 +72,7 @@ Object* makeRandomScene() {
 	list[i++] = new Sphere(glm::vec3(0, 1, 0), 1.0, new Dielectric(1.5));
 	list[i++] = new Sphere(glm::vec3(-4, 1, 0), 1.0, new Lambertian(glm::vec3(.4, .2, .1)));
 	list[i++] = new Sphere(glm::vec3(4, 1, 0), 1.0, new Metal(glm::vec3(.7, .6, .5)));
-	return new ObjectList(list, i);
+	return new BVHNode(list, i, 0, 0);
 }
 
 
@@ -83,18 +86,20 @@ int main() {
 	int num_samples = 100;
 	glm::vec3 curr = glm::vec3();
 	float R = cos(M_PI / 4.0f);
-	//Object* list[5];
+	Object* list[5];
 	//list[0] = new Sphere(glm::vec3(0, 0, -1), .5, new Lambertian(glm::vec3(.1, .2, .5)));
 	//list[1] = new Sphere(glm::vec3(0, -100.5, -1), 100, new Lambertian(glm::vec3(.8, .8, 0)));
 	//list[2] = new Sphere(glm::vec3(1, 0, -1), .5, new Metal(glm::vec3(.8, .6, .2)));
 	//list[3] = new Sphere(glm::vec3(-1, 0, -1), .5, new Dielectric(1.5));
 	//list[4] = new Sphere(glm::vec3(-1, 0, -1), -.45, new Dielectric(1.5));
 	
-	glm::vec3 lookfrom(4, 1, 0);
-	glm::vec3 lookat(0, 0, -1);
+	glm::vec3 lookfrom(13, 2, 3);
+	glm::vec3 lookat(0, 0, 0);
 	float dist_to_focus = glm::length(lookfrom - lookat);
+	float start_time = 0;
+	float end_time = 1;
 	Object* scene = makeRandomScene();
-	Camera camera(lookfrom, lookat, glm::vec3(0, 1, 0), 90, nx / (float)ny, 0, 1);
+	Camera camera(lookfrom, lookat, glm::vec3(0, 1, 0), 20, nx / (float)ny, 0, 10, start_time, end_time);
 	//list[4] = new Sphere(glm::vec3(-1, 0, -1), -.45, new Dielectric(1.5f));
 	//Object* scene = new ObjectList(list, 5);
 	img.resize(nx * ny);
@@ -113,5 +118,5 @@ int main() {
 			img.at(i + (ny - j - 1) * nx) = glm::vec3(sqrt(color.r), sqrt(color.g), sqrt(color.b));
 		}
 	}
-	BuildPPM("test", img, nx, ny);
+	BuildPPM("debug.ppm", img, nx, ny);
 }

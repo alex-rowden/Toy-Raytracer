@@ -9,7 +9,9 @@ glm::vec3 Camera::random_in_unit_disk() {
 	return glm::vec3(r * sin(theta), r * cos(theta), 0);
 }
 
-Camera::Camera(glm::vec3 position, glm::vec3 lookat, glm::vec3 up, float fov, float aspect, float aperature, float focus_dist) {
+Camera::Camera(glm::vec3 position, glm::vec3 lookat, glm::vec3 up, float fov, float aspect, float aperature, float focus_dist, float start_time, float end_time) {
+	time_start = start_time;
+	time_end = end_time;
 	this->lens_radius = aperature / 2.f;
 	
 	float theta = fov * M_PI / 180.0f;
@@ -30,5 +32,6 @@ Camera::Camera(glm::vec3 position, glm::vec3 lookat, glm::vec3 up, float fov, fl
 Ray Camera::getRay(float s, float t) {
 	glm::vec3 rd = this->lens_radius * random_in_unit_disk();
 	glm::vec3 offset = this->u * rd.x + this->v * rd.y;
-	return Ray(this->origin + offset, this->lower_left_corner + s * this->horizontal + t * this->vertical - this->origin - offset);
+	float rand_time = time_start + (time_end - time_start) * rand() / (float)RAND_MAX;
+	return Ray(this->origin + offset, this->lower_left_corner + s * this->horizontal + t * this->vertical - this->origin - offset, rand_time);
 }

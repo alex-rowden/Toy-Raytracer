@@ -1,5 +1,6 @@
 #pragma once
 #include "Ray.h"
+#include "AABB.h"
 #include <glm.hpp>
 
 class Material;
@@ -16,7 +17,8 @@ class Object
 {
 public:
 	virtual bool hit(Ray& r, float t_min, float t_max, hit_record& rec) const = 0;
-	
+	virtual bool bounding_box(float time_start, float time_end, AABB& box) const = 0;
+
 	Material* material;
 };
 

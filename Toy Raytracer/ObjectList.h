@@ -8,5 +8,6 @@ public:
 	ObjectList() {}
 	ObjectList(Object** l, int n) { list = l; list_size = n; }
 	virtual bool hit(Ray& r, float t_min, float t_max, hit_record& rec) const;
+	virtual bool bounding_box(float start_time, float end_time, AABB& box) const;
 };
 

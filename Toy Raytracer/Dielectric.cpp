@@ -24,9 +24,10 @@ bool Dielectric::scatter(Ray& r, hit_record& rec, glm::vec3& attenuation, Ray& s
 	else {
 		reflect_prob = 1.0;
 	}if(uniform01() < reflect_prob){
-		scattered = Ray(rec.position, reflected);
+		scattered = Ray(rec.position, reflected, r.getTime());
 	}else {
-		scattered = Ray(rec.position, refracted);
+		scattered = Ray(rec.position, refracted, r.getTime());
+		//return false;
 	}
 	return true;
 }
